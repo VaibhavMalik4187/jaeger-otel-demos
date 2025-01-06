@@ -13,11 +13,17 @@ java {
 	}
 }
 
+configurations {
+	agent
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	agent "io.opentelemetry.javaagent:opentelemetry-javaagent:2.11.0"
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -25,4 +31,17 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task copyAgent(type: Copy) {
+	from configurations.agent {
+		rename "opentelemetry-javaagent-.*\\.jar", "opentelemetry-javaagent.jar"
+	}
+	into layout.buildDirectory.dir("agent")
+}
+
+bootJar {
+	dependsOn copyAgent
+
+	archiveFileName = "app.jar"
 }
