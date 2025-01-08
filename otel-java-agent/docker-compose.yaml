@@ -3,19 +3,19 @@ services:
   java-agent-service:
     build: ./
     environment:
+      OTEL_SERVICE_NAME: "java-agent-service"
       OTEL_LOGS_EXPORTER: "logging"
-      OTEL_EXPORTER_JAEGER_ENDPOINT: "http://jaeger:14250"
-      OTEL_TRACES_EXPORTER: "jaeger"
+      OTEL_TRACES_EXPORTER: "otlp"
       OTEL_METRICS_EXPORTER: "logging"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4318"
     ports:
       - "8080:8080"
 
   jaeger-all-in-one:
     container_name: jaeger
     image: jaegertracing/all-in-one:latest
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
     restart: always
     ports:
       - "16686:16686"
-      - "14250:14250"
+      - "4317:4317"
+      - "4318:4318"
