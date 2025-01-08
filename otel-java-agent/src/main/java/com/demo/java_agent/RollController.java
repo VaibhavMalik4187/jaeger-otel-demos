@@ -23,6 +23,17 @@ public class RollController {
         return Integer.toString(result);
     }
 
+    @GetMapping("/factorial")
+    public long calculateFactorial(@RequestParam("number") int number) {
+        if (number < 1) {
+            return 1;
+        }
+
+        int result = this.getRandomNumber(1, number);
+        index(Optional.of("Test player"));
+        return result * calculateFactorial(number - 1);
+    }
+
     public int getRandomNumber(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }

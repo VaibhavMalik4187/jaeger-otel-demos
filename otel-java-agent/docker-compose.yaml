@@ -4,10 +4,12 @@ services:
     build: ./
     environment:
       OTEL_SERVICE_NAME: "java-agent-service"
-      OTEL_LOGS_EXPORTER: "logging"
+      OTEL_LOGS_EXPORTER: "none"
       OTEL_TRACES_EXPORTER: "otlp"
-      OTEL_METRICS_EXPORTER: "logging"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4318"
+      OTEL_METRICS_EXPORTER: "none"
+      # OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+      # OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317" # For grpc protocol
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4318" # For http/protobuf protocols
     ports:
       - "8080:8080"
 
@@ -16,6 +18,6 @@ services:
     image: jaegertracing/all-in-one:latest
     restart: always
     ports:
-      - "16686:16686"
-      - "4317:4317"
-      - "4318:4318"
+      - "16686:16686" # UI endpoint
+      - "4317:4317" # Otlp exporter grpc endpoint
+      - "4318:4318" # Otlp exporter http/protobuf endpoint
