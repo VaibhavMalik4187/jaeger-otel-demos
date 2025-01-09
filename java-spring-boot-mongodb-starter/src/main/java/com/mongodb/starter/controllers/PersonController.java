@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import io.opentelemetry.api.trace.Span;
 
 @RestController
 @RequestMapping("/api")
@@ -35,6 +36,8 @@ public class PersonController {
 
     @GetMapping("persons")
     public List<PersonDTO> getPersons() {
+        Span span = Span.current();
+        span.setAttribute("Test attribute", "Working fine");
         return personService.findAll();
     }
 

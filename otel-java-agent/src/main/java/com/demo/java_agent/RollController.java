@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import io.opentelemetry.api.trace.Span;
+
 
 @RestController
 public class RollController {
@@ -25,13 +27,16 @@ public class RollController {
 
     @GetMapping("/factorial")
     public long calculateFactorial(@RequestParam("number") int number) {
+        Span span = Span.current();
+        span.setAttribute("Number", String.valueOf(number));
+        return factorial(number);
+    }
+
+    private long factorial(int number) {
         if (number < 1) {
             return 1;
         }
-
-        int result = this.getRandomNumber(1, number);
-        index(Optional.of("Test player"));
-        return result * calculateFactorial(number - 1);
+        return number * factorial(number - 1);
     }
 
     public int getRandomNumber(int min, int max) {
