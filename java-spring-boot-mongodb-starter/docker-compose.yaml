@@ -1,0 +1,37 @@
+version: '3'
+services:
+  java-spring-boot-mongodb-service:
+    depends_on:
+      - mongodb
+    build: ./
+    environment:
+      MONGODB_URI: "mongodb://mongodb:27017"
+      # MONGODB_URI: "http://mongo:27017"
+      OTEL_SERVICE_NAME: "java-spring-boot-mongodb-service"
+      OTEL_LOGS_EXPORTER: "none"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_METRICS_EXPORTER: "none"
+      # OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+      # OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317" # For grpc protocol
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4318" # For http/protobuf protocols
+    ports:
+      - "8080:8080"
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    restart: always
+    # environment:
+      # MONGO_INITDB_ROOT_USERNAME: root
+      # MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+
+  jaeger-all-in-one:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    restart: always
+    ports:
+      - "16686:16686" # UI endpoint
+      - "4317:4317" # Otlp exporter grpc endpoint
+      - "4318:4318" # Otlp exporter http/protobuf endpoint
